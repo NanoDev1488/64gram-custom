@@ -133,7 +133,7 @@ jobs:
       - name: Telegram Desktop build.
         if: env.ONLY_CACHE == 'false'
         run: |
-          cd %TBUILD%\%REPO_NAME%\Telegram
+          cd /d %TBUILD%\%REPO_NAME%\Telegram
 
           call configure.bat ^
           %TDESKTOP_BUILD_GENERATOR% ^
@@ -152,6 +152,7 @@ jobs:
       - name: Move artifact.
         if: env.UPLOAD_ARTIFACT == 'true'
         run: |
+          cd /d %GITHUB_WORKSPACE%
           set OUT=%TBUILD%\%REPO_NAME%\out\Debug
           mkdir artifact
           move %OUT%\Telegram.exe artifact\64Gram.exe
