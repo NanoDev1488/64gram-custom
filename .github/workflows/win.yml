@@ -40,6 +40,7 @@ jobs:
         run: |
           if not exist "C:\TBuild" mkdir C:\TBuild
           if not exist "C:\TBuild\Libraries" mkdir C:\TBuild\Libraries
+          if not exist "C:\TBuild\Libraries\win64" mkdir C:\TBuild\Libraries\win64
           mklink /d C:\TBuild\%REPO_NAME% %GITHUB_WORKSPACE%
           echo TBUILD=C:\TBuild>>%GITHUB_ENV%
           echo LibrariesPath=C:\TBuild\Libraries\win64>>%GITHUB_ENV%
@@ -122,7 +123,12 @@ jobs:
 
       - name: Free up some disk space.
         shell: bash
-        run: find $LibrariesPath '(' '(' ! '(' -name '*.lib' -o -name '*.a' -o -name '*.exe' -o -name '*.h' -o -name '*.hpp' -o -name '*.inc' -o -name '*.cmake' -o -name '*.pc' -o -path '*/include/*' -o -path '*/objects-*' -o -path '*/cache_keys/*' -o -path '*/patches/*' -o -path '*/nv-codec-headers/*' ')' -type f ')' -o -empty ')' -delete
+        run: |
+          for dir in "C:/TBuild/Libraries/win64" "C:/TBuild/Libraries"; do
+            if [ -d "$dir" ]; then
+              find "$dir" '(' '(' ! '(' -name '*.lib' -o -name '*.a' -o -name '*.exe' -o -name '*.h' -o -name '*.hpp' -o -name '*.inc' -o -name '*.cmake' -o -name '*.pc' -o -path '*/include/*' -o -path '*/objects-*' -o -path '*/cache_keys/*' -o -path '*/patches/*' -o -path '*/nv-codec-headers/*' ')' -type f ')' -o -empty ')' -delete || true
+            fi
+          done
 
       - name: Telegram Desktop build.
         if: env.ONLY_CACHE == 'false'
