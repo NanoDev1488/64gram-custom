@@ -344,32 +344,10 @@ void FinalizeFailure(MeasuredFormula *result) {
 } // namespace
 
 bool EnsureMicrotexInitialized(QString *error) {
-	std::call_once(MicrotexInitOnce, [] {
-		try {
-#ifdef Q_OS_MAC // Use resources from the .app bundle on macOS.
-
-			base::RegisterBundledResources(u"external_microtex_bundled.rcc"_q);
-
-#else // Q_OS_MAC
-
-			InitIvMarkdownMicrotexBundledResource();
-
-#endif // Q_OS_MAC
-
-			tex::LaTeX::initBundled();
-			MicrotexInitialized = true;
-		} catch (const std::exception &exception) {
-			MicrotexInitError = ExceptionText(exception);
-		} catch (...) {
-			MicrotexInitError = u"unknown-exception"_q;
-		}
-	});
-	if (!MicrotexInitialized && error) {
-		*error = MicrotexInitError;
-	} else if (MicrotexInitialized && error) {
-		error->clear();
+	if (error) {
+		*error = u"disabled"_q;
 	}
-	return MicrotexInitialized;
+	return false;
 }
 
 MeasuredFormula MeasureWithMicrotex(const MicrotexMeasureRequest &request) {
@@ -454,7 +432,7 @@ MicrotexRenderResult RenderWithMicrotex(const MicrotexRenderRequest &request) {
 }
 
 bool MicrotexBackendLinked() {
-	return true;
+	return false;
 }
 
 } // namespace Iv::Markdown

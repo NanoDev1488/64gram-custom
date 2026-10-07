@@ -12,7 +12,9 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 namespace Core {
 
 [[nodiscard]] inline const Webview::Available &CachedWebviewAvailability() {
-	static const auto result = Webview::Available::none;
+	static const auto result = Webview::Available{
+		.error = Webview::Available::Error::NoWebview2,
+	};
 	return result;
 }
 
