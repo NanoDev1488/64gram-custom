@@ -1091,7 +1091,7 @@ private:
 	bool _askDownloadPath = false;
 	rpl::variable<QString> _downloadPath;
 	QByteArray _downloadPathBookmark;
-	bool _soundNotify = true;
+	bool _soundNotify = false;
 	bool _desktopNotify = true;
 	bool _flashBounceNotify = true;
 	NotifyView _notifyView = NotifyView::ShowPreview;

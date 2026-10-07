@@ -1681,7 +1681,7 @@ void Settings::resetOnLastLogout() {
 	_downloadPath = QString();
 	_downloadPathBookmark = QByteArray();
 
-	_soundNotify = true;
+	_soundNotify = false;
 	_desktopNotify = true;
 	_flashBounceNotify = true;
 	_notifyView = NotifyView::ShowPreview;

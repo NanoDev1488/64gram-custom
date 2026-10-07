@@ -1482,7 +1482,7 @@ void TopBarWidget::updateControlsVisibility() {
 	_infoToggle->setVisible(historyMode
 		&& !_activeChat.key.folder()
 		&& !isOneColumn
-		&& _controller->canShowThirdSection()
+		&& _controller->canShowThirdSection());
 	_call->setVisible(false);
 	_groupCall->setVisible(false);
 
