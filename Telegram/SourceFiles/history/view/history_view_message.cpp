@@ -1,4 +1,4 @@
-﻿/*
+/*
 This file is part of Telegram Desktop,
 the official desktop application for the Telegram messaging service.
 
@@ -1093,7 +1093,7 @@ void Message::refreshRightBadge() {
 			? delegate()->elementAuthorRank(this)
 			: TextUtilities::RemoveEmoji(TextUtilities::SingleLine(text)))
 	};
-	const auto boosts = item->boostsApplied();
+	const auto boosts = 0;
 	const auto needBadge = !tagText.empty() || boosts;
 	if (!needBadge) {
 		if (Has<RightBadge>()) {

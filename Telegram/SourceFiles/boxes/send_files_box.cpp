@@ -2158,8 +2158,9 @@ TextWithTags SendFilesBox::fieldText() const {
 void SendFilesBox::checkCharsLimitation() {
 	const auto limits = Data::PremiumLimits(&_show->session());
 	const auto caption = fieldText();
-	const auto remove = caption.text.size() - limits.captionLengthCurrent();
-	if ((remove > 0) && _emojiToggle) {
+	const auto count = int(caption.text.size());
+	const auto maxTextSize = limits.captionLengthCurrent();
+	if ((count > 0) && _emojiToggle) {
 		if (!_charsLimitation) {
 			_charsLimitation = base::make_unique_q<CharactersLimitLabel>(
 				this,
@@ -2172,7 +2173,7 @@ void SendFilesBox::checkCharsLimitation() {
 				checkCharsLimitation();
 			}, _charsLimitation->lifetime());
 		}
-		_charsLimitation->setLeft(remove);
+		_charsLimitation->setCountAndLimit(count, maxTextSize);
 	} else {
 		if (_charsLimitation) {
 			_charsLimitation = nullptr;

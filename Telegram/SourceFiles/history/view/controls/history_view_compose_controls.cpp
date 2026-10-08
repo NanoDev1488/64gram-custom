@@ -4221,11 +4221,7 @@ void SetupRestrictionView(
 			state->icon = nullptr;
 			state->unlock = nullptr;
 			state->label = nullptr;
-			state->button = BoostsToLiftWriteRestriction(
-				widget,
-				show,
-				peer,
-				lifting);
+			state->button = nullptr;
 		} else if (value.type == Type::Rights) {
 			state->icon = nullptr;
 			state->unlock = nullptr;
@@ -6465,24 +6461,20 @@ TextWithEntities ComposeControls::prepareTextForEditMsg() const {
 }
 
 void ComposeControls::checkCharsLimitation() {
-	if (!_history || !isEditingMessage()) {
+	if (!_history) {
 		_charsLimitation = nullptr;
 		return;
 	}
-	const auto item = _history->owner().message(_header->editMsgId());
-	if (!item) {
-		_charsLimitation = nullptr;
-		return;
-	}
-	const auto hasMediaWithCaption = item->media()
-		&& item->media()->allowsEditCaption();
 	const auto limits = Data::PremiumLimits(&session());
-	const auto maxTextSize = hasMediaWithCaption
-		? limits.captionLengthCurrent()
+	const auto maxTextSize = (isEditingMessage() && _header && _header->editMsgId())
+		? ([&] {
+			const auto item = _history->owner().message(_header->editMsgId());
+			const auto hasMedia = item && item->media() && item->media()->allowsEditCaption();
+			return hasMedia ? limits.captionLengthCurrent() : limits.messageLengthCurrent();
+		})()
 		: limits.messageLengthCurrent();
-	const auto remove = Ui::ComputeFieldCharacterCount(_field)
-		- maxTextSize;
-	if (remove > 0) {
+	const auto count = Ui::ComputeFieldCharacterCount(_field);
+	if (count > 0) {
 		if (!_charsLimitation) {
 			using namespace Controls;
 			_charsLimitation = base::make_unique_q<CharactersLimitLabel>(
@@ -6491,7 +6483,7 @@ void ComposeControls::checkCharsLimitation() {
 				style::al_bottom);
 			_charsLimitation->show();
 		}
-		_charsLimitation->setLeft(remove);
+		_charsLimitation->setCountAndLimit(count, maxTextSize);
 	} else {
 		_charsLimitation = nullptr;
 	}

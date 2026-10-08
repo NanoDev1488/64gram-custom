@@ -1309,20 +1309,7 @@ void Filler::addManageChat() {
 }
 
 void Filler::addBoostChat() {
-	if (const auto channel = _peer->asChannel()) {
-		if (channel->isMonoforum()) {
-			return;
-		}
-		const auto text = channel->isMegagroup()
-			? tr::lng_boost_group_button(tr::now)
-			: tr::lng_boost_channel_button(tr::now);
-		const auto weak = base::make_weak(_controller);
-		_addAction(text, [=] {
-			if (const auto strong = weak.get()) {
-				strong->resolveBoostState(channel);
-			}
-		}, &st::menuIconBoosts);
-	}
+	return;
 }
 
 void Filler::addViewStatistics() {

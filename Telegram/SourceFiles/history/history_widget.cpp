@@ -1,4 +1,4 @@
-﻿/*
+/*
 This file is part of Telegram Desktop,
 the official desktop application for the Telegram messaging service.
 
@@ -10411,23 +10411,20 @@ void HistoryWidget::checkCharsCount() {
 }
 
 void HistoryWidget::checkCharsLimitation() {
-	if (!_history || !_editMsgId) {
+	if (!_history) {
 		_charsLimitation = nullptr;
 		return;
 	}
-	const auto item = session().data().message(_history->peer, _editMsgId);
-	if (!item) {
-		_charsLimitation = nullptr;
-		return;
-	}
-	const auto hasMediaWithCaption = item->media()
-		&& item->media()->allowsEditCaption();
 	const auto limits = Data::PremiumLimits(&session());
-	const auto maxTextSize = hasMediaWithCaption
-		? limits.captionLengthCurrent()
+	const auto maxTextSize = (_editMsgId)
+		? ([&] {
+			const auto item = session().data().message(_history->peer, _editMsgId);
+			const auto hasMedia = item && item->media() && item->media()->allowsEditCaption();
+			return hasMedia ? limits.captionLengthCurrent() : limits.messageLengthCurrent();
+		})()
 		: limits.messageLengthCurrent();
-	const auto remove = _fieldCharsCountManager.count() - maxTextSize;
-	if (remove > 0) {
+	const auto count = _fieldCharsCountManager.count();
+	if (count > 0) {
 		if (!_charsLimitation) {
 			_charsLimitation = base::make_unique_q<CharactersLimitLabel>(
 				this,
@@ -10435,7 +10432,7 @@ void HistoryWidget::checkCharsLimitation() {
 				style::al_bottom);
 			_charsLimitation->show();
 		}
-		_charsLimitation->setLeft(remove);
+		_charsLimitation->setCountAndLimit(count, maxTextSize);
 	} else {
 		_charsLimitation = nullptr;
 	}

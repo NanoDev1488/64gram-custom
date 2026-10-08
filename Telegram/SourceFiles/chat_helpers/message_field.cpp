@@ -1,4 +1,4 @@
-﻿/*
+/*
 This file is part of Telegram Desktop,
 the official desktop application for the Telegram messaging service.
 
@@ -1430,15 +1430,7 @@ std::unique_ptr<Ui::AbstractButton> BoostsToLiftWriteRestriction(
 		std::shared_ptr<ChatHelpers::Show> show,
 		not_null<PeerData*> peer,
 		int boosts) {
-	auto result = std::make_unique<Ui::FlatButton>(
-		parent,
-		tr::lng_restricted_boost_group(tr::now),
-		st::historyComposeButton);
-	result->setClickedCallback([=] {
-		const auto window = show->resolveWindow();
-		window->resolveBoostState(peer->asChannel(), boosts);
-	});
-	return result;
+	return nullptr;
 }
 
 std::unique_ptr<Ui::AbstractButton> FrozenWriteRestriction(

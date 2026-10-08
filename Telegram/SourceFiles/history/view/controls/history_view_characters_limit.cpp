@@ -68,4 +68,16 @@ void CharactersLimitLabel::setLeft(int value) {
 	}
 }
 
+void CharactersLimitLabel::setCountAndLimit(int count, int limit) {
+	if (count > limit) {
+		setTextColorOverride(st::historyCharsLimitationLabel.textFg->c);
+		Ui::FlatLabel::setText(kMinus
+			+ QString::number(std::min(count - limit, kLimit)));
+	} else {
+		setTextColorOverride(st::windowSubTextFg->c);
+		Ui::FlatLabel::setText(QString::number(count) + '/' + QString::number(limit));
+	}
+	_position(height(), _widgetToAlign->geometry());
+}
+
 } // namespace HistoryView::Controls

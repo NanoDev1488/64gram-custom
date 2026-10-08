@@ -20,6 +20,7 @@ public:
 		QMargins margins = {});
 
 	void setLeft(int value);
+	void setCountAndLimit(int count, int limit);
 
 private:
 	int _lastValue = 0;

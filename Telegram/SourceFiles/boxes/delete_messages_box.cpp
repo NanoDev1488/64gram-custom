@@ -1,4 +1,4 @@
-﻿/*
+/*
 This file is part of Telegram Desktop,
 the official desktop application for the Telegram messaging service.
 
@@ -218,6 +218,13 @@ void DeleteMessagesBox::prepare() {
 				appendDetails(std::move(revoke->description));
 			} else if (peer->isChannel()) {
 				if (peer->isMegagroup()) {
+					appendDetails({
+						tr::lng_delete_for_everyone_hint(
+							tr::now,
+							lt_count,
+							count)
+					});
+				} else {
 					appendDetails({
 						tr::lng_delete_for_everyone_hint(
 							tr::now,

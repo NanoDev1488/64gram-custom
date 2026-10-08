@@ -78,7 +78,7 @@ jobs:
         id: cache-third-party
         uses: actions/cache@v6
         with:
-          path: ${{ env.TBUILD }}\ThirdParty
+          path: C:/TBuild/ThirdParty
           key: ${{ runner.OS }}-${{ runner.arch }}-third-party-${{ env.CACHE_KEY }}
           restore-keys: ${{ runner.OS }}-${{ runner.arch }}-third-party-
 
@@ -87,11 +87,11 @@ jobs:
         uses: actions/cache@v6
         with:
           path: |
-            ${{ env.LibrariesPath }}\*
-            !${{ env.LibrariesPath }}\cache_keys
-            !${{ env.LibrariesPath }}\[qQ]t[_-]*
-            ${{ env.LibrariesPath }}\cache_keys\*
-            !${{ env.LibrariesPath }}\cache_keys\[qQ]t[_-]*
+            C:/TBuild/Libraries/win64/*
+            !C:/TBuild/Libraries/win64/cache_keys
+            !C:/TBuild/Libraries/win64/[qQ]t[_-]*
+            C:/TBuild/Libraries/win64/cache_keys/*
+            !C:/TBuild/Libraries/win64/cache_keys/[qQ]t[_-]*
           key: ${{ runner.OS }}-${{ matrix.arch }}-libs-v2-${{ env.CACHE_KEY }}
           restore-keys: ${{ runner.OS }}-${{ matrix.arch }}-libs-v2-
 
@@ -100,14 +100,15 @@ jobs:
         uses: actions/cache@v6
         with:
           path: |
-            ${{ env.LibrariesPath }}\[qQ]t[_-]*
-            ${{ env.LibrariesPath }}\cache_keys\[qQ]t[_-]*
+            C:/TBuild/Libraries/win64/[qQ]t[_-]*
+            C:/TBuild/Libraries/win64/cache_keys/[qQ]t[_-]*
           key: ${{ runner.OS }}-${{ matrix.arch }}-${{ matrix.qt }}-${{ env.CACHE_KEY }}
           restore-keys: ${{ runner.OS }}-${{ matrix.arch }}-${{ matrix.qt }}-
 
       - name: Libraries.
         run: |
-          %TBUILD%\%REPO_NAME%\Telegram\build\prepare\win.bat skip-release silent ${{ matrix.qt }}
+          cd /d %TBUILD%
+          %TBUILD%\%REPO_NAME%\Telegram\build\prepare\win.bat silent ${{ matrix.qt }}
 
       - name: Save ThirdParty cache early.
         uses: actions/cache/save@v6
@@ -168,21 +169,20 @@ jobs:
           %TDESKTOP_BUILD_ARCH% ^
           ${{ matrix.qt }} ^
           %TDESKTOP_BUILD_API% ^
-          -D CMAKE_CONFIGURATION_TYPES=Debug ^
+          -D CMAKE_CONFIGURATION_TYPES=Release ^
           -D CMAKE_COMPILE_WARNING_AS_ERROR=OFF ^
-          -D CMAKE_MSVC_DEBUG_INFORMATION_FORMAT= ^
           -D DESKTOP_APP_DISABLE_AUTOUPDATE=ON ^
           -D DESKTOP_APP_DISABLE_CRASH_REPORTS=ON ^
           -D TDESKTOP_DISABLE_SPELLCHECK=ON ^
           %TDESKTOP_BUILD_DEFINE%
 
-          cmake --build ..\out --config Debug --parallel
+          cmake --build ..\out --config Release --parallel
 
       - name: Move artifact.
         if: env.UPLOAD_ARTIFACT == 'true'
         run: |
           cd /d %GITHUB_WORKSPACE%
-          set OUT=%TBUILD%\%REPO_NAME%\out\Debug
+          set OUT=%TBUILD%\%REPO_NAME%\out\Release
           mkdir artifact
           move %OUT%\Telegram.exe artifact\64Gram.exe
       - uses: actions/upload-artifact@v7

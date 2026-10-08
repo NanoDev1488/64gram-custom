@@ -1,4 +1,4 @@
-﻿/*
+/*
 This file is part of Telegram Desktop,
 the official desktop application for the Telegram messaging service.
 
@@ -200,7 +200,7 @@ struct PreparedFileThumbnail {
 	auto result = QByteArray();
 	QBuffer buffer(&result);
 	QImageWriter writer(&buffer, "JPEG");
-	writer.setQuality(87);
+	writer.setQuality(95);
 	writer.setProgressiveScanWrite(true);
 	writer.write(full);
 	buffer.close();
