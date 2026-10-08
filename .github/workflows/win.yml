@@ -50,8 +50,7 @@ jobs:
           SDK="$(grep "SDK version" $DOCPATH | sed -r 's/.*\*\*(.*)\*\* SDK version.*/\1/')"
           echo "SDK=$SDK" >> $GITHUB_ENV
 
-          sed -i '/CMAKE_${lang}_FLAGS_DEBUG_INIT/s/${_Zi}//' "$PROGRAMFILES"/CMake/share/cmake*/Modules/Platform/Windows-MSVC.cmake
-          sed -i 's/<IF:\$<BOOL:\$<GENEX_EVAL:\$<TARGET_PROPERTY:MSVC_DEBUG_INFORMATION_FORMAT>>>,\/DEBUG,\/DEBUG:NONE>/\/DEBUG:NONE/g' "$GITHUB_WORKSPACE"/cmake/options_win.cmake
+          python -c "p = 'cmake/options_win.cmake'; c = open(p).read(); open(p, 'w').write(c.replace('$<IF:$<BOOL:$<GENEX_EVAL:$<TARGET_PROPERTY:MSVC_DEBUG_INFORMATION_FORMAT>>>,/DEBUG,/DEBUG:NONE>', '/DEBUG:NONE'))"
 
           echo "$(sha256sum $GITHUB_WORKSPACE/$PREPARE_PATH | awk '{ print $1 }')" >> CACHE_KEY.txt
           echo "$SDK" >> CACHE_KEY.txt
